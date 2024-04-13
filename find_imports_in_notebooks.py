@@ -1,30 +1,48 @@
 #!/usr/bin/env python3
 
+# https://realpython.com/command-line-interfaces-python-argparse/
+import argparse  # https://docs.python.org/3.3/library/argparse.html
+
+# find files
 # https://docs.python.org/3/library/glob.html
 import glob
+
 # https://docs.python.org/3/library/json.html
 import json
 
+# which version of Python is running?
 import sys
 #print(sys.version)
 
+# test imports without importing
 # https://docs.python.org/3/library/importlib.html
 import importlib
 
-directory_to_search="."
+# docstrings should conform to
+# https://google.github.io/styleguide/pyguide.html
 
-def extract_json_from_notebook(notebook_filepath):
+
+
+def extract_json_from_notebook(notebook_filepath: str):
     """
-    notebook_filepath = full path to ipynb file
+    Args:
+        notebook_filepath: full path to ipynb file
+
+    Returns:
+        JSON content
     """
     with open(notebook_filepath,'r') as file_handle:
         file_content = json.load(file_handle)
 
     return file_content
 
-def find_import_in_json(notebook_json):
+def find_import_in_json(notebook_json) -> list:
     """
-    notebook_json = JSON of Jupyter notebook
+    Args:
+        notebook_json: JSON of Jupyter notebook
+
+    Returns:
+        list of source code lines that contain "import "
     """
 
     list_of_lines_with_import = []
@@ -40,12 +58,14 @@ def find_import_in_json(notebook_json):
 
     return list_of_lines_with_import
 
-def does_import_work(module_name: str):
+def does_import_work(module_name: str) -> bool:
     """
 
-    module_name = name of module to evaluate, e.g., "datetime"
+    Args:
+        module_name: name of module to evaluate, e.g., "datetime"
 
-    returns a boolean
+    Returns:
+        boolean
     """
     # https://stackoverflow.com/a/14050282/1164295
     if sys.version_info[0]==3 and sys.version_info[1]<4:
@@ -64,7 +84,22 @@ def does_import_work(module_name: str):
 
 if __name__ == "__main__":
 
-    notebook_filepaths_list = glob.glob(directory_to_search+"/**/*.ipynb", recursive=True)
+    theparser = argparse.ArgumentParser(
+        description="find imported modules in Jupyter notebooks", allow_abbrev=False
+    )
+
+    # optional argument
+    theparser.add_argument(
+        "--directory",
+        metavar="dir",
+        type=str,
+        default=".",
+        help="directory in which to look for .ipynb files",
+    )
+
+    args = theparser.parse_args()
+
+    notebook_filepaths_list = glob.glob(args.directory+"/**/*.ipynb", recursive=True)
 
     for this_notebook_filepath in notebook_filepaths_list:
         notebook_json = extract_json_from_notebook(this_notebook_filepath)
@@ -79,6 +114,7 @@ if __name__ == "__main__":
                     print("            works: "+this_line)
                 else:
                     print(this_line)
-            else:
+            else: # line does not start with import, e.g. "from x import y"
                 print(this_line)
 
+#EOF
