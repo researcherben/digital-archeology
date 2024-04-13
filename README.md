@@ -2,6 +2,26 @@
 
 tools for assessing software
 
+## find classes and functions in Python scripts
+
+```bash
+./find_classes_in_python_scripts.sh 
+    ./afolder/more_folder/cool.py:class imim(ASDF_DF, SDfma):
+    ./afolder/somefi.py:class ASDF_FSDFM():
+```
+
+```bash
+./find_functions_in_python_scripts.sh 
+    ./afolder/more_folder/cool.py:def mimmigmiasdf(m, miamdfa):
+    ./afolder/more_folder/cool.py:def mim(adf, imaisdf):
+    ./afolder/more_folder/cool.py:    def here_ime():
+    ./afolder/somefi.py:def mycool(miafd):
+    ./afolder/somefi.py:def masdfi(mim):
+    ./find_imports_in_notebooks.py:def extract_json_from_notebook(notebook_filepath: str):
+    ./find_imports_in_notebooks.py:def find_import_in_json(notebook_json) -> list:
+    ./find_imports_in_notebooks.py:def does_import_work(module_name: str) -> bool:
+```
+
 ## find imports in notebooks 
 
 ```bash
